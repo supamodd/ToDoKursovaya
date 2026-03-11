@@ -1,13 +1,16 @@
-#include "MainForm.h"
+#include "LoginForm.h"
 
 using namespace System;
 using namespace System::Windows::Forms;
 
 [STAThread]
-int main(array<String^>^ args) {
+int main(array<System::String^>^ args)
+{
     Application::EnableVisualStyles();
     Application::SetCompatibleTextRenderingDefault(false);
-    ToDoListGUI::MainForm^ form = gcnew ToDoListGUI::MainForm();
-    Application::Run(form);
+
+    ToDoListGUI::LoginForm^ login = gcnew ToDoListGUI::LoginForm();
+    Application::Run(login);
+
     return 0;
 }
