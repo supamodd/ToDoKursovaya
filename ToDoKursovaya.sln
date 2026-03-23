@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ToDoKursovaya", "ToDoKursov
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "ToDoListInstaller", "ToDoListInstaller\ToDoListInstaller.vdproj", "{D9CBAE59-8BF5-B7FB-E381-26A8F4C96955}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -23,6 +25,10 @@ Global
 		{1BF37229-6090-0012-CB4B-25D7201B1B9E}.Release|x64.Build.0 = Release|x64
 		{1BF37229-6090-0012-CB4B-25D7201B1B9E}.Release|x86.ActiveCfg = Release|Win32
 		{1BF37229-6090-0012-CB4B-25D7201B1B9E}.Release|x86.Build.0 = Release|Win32
+		{D9CBAE59-8BF5-B7FB-E381-26A8F4C96955}.Debug|x64.ActiveCfg = Debug
+		{D9CBAE59-8BF5-B7FB-E381-26A8F4C96955}.Debug|x86.ActiveCfg = Debug
+		{D9CBAE59-8BF5-B7FB-E381-26A8F4C96955}.Release|x64.ActiveCfg = Release
+		{D9CBAE59-8BF5-B7FB-E381-26A8F4C96955}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
