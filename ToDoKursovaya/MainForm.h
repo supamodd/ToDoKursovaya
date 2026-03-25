@@ -1,11 +1,11 @@
 ﻿#pragma once
+#include "OverdueAlertForm.h"
 #include <vector>
 #include <string>
 #include <fstream>
 #include <ctime>
 #include <sstream>
 #include <iomanip>
-
 namespace ToDoListGUI
 {
     using namespace System;
@@ -20,10 +20,10 @@ namespace ToDoListGUI
 
     ref struct Task
     {
-        String^ description;      // Короткое название
+        String^ description;
         String^ priority;
         String^ dueDateTime;
-        String^ fullDescription;  // Полное описание
+        String^ fullDescription;
     };
 
     public ref class MainForm : public System::Windows::Forms::Form
@@ -34,23 +34,10 @@ namespace ToDoListGUI
             this->username = username;
             this->currentDarkMode = darkMode;
             this->currentLanguage = language;
+
             InitializeComponent();
 
-            notificationTimer = gcnew System::Windows::Forms::Timer();
-            notificationTimer->Interval = 30000;
-            notificationTimer->Tick += gcnew System::EventHandler(this, &MainForm::notificationTimer_Tick);
-            notificationTimer->Start();
-
-            tasks = gcnew Collections::Generic::List<Task^>();
-            LoadTasks();
-            UpdateListBox();
-            this->FormClosing += gcnew System::Windows::Forms::FormClosingEventHandler(this, &MainForm::MainForm_FormClosing);
-            descTextBox->ForeColor = Color::Gray;
-            fullDescriptionTextBox->ForeColor = Color::Gray;
-            this->Font = gcnew System::Drawing::Font(L"Warm Pixel", 10.0F, FontStyle::Regular);
-            this->Icon = gcnew System::Drawing::Icon("app_icon.ico");
-            ApplyTheme(currentDarkMode);
-            UpdateLanguage(currentLanguage);
+            this->Load += gcnew System::EventHandler(this, &MainForm::MainForm_Load);
         }
 
     protected:
@@ -79,7 +66,6 @@ namespace ToDoListGUI
         System::Windows::Forms::Button^ btnLogout;
         System::Windows::Forms::Timer^ notificationTimer;
 
-    private:
         System::ComponentModel::Container^ components;
         Collections::Generic::List<Task^>^ tasks;
 
@@ -99,6 +85,7 @@ namespace ToDoListGUI
             this->searchButton = (gcnew System::Windows::Forms::Button());
             this->checkOverdueButton = (gcnew System::Windows::Forms::Button());
             this->trayIcon = (gcnew System::Windows::Forms::NotifyIcon(this->components));
+            this->btnLogout = (gcnew System::Windows::Forms::Button());
 
             this->SuspendLayout();
 
@@ -120,16 +107,16 @@ namespace ToDoListGUI
             this->descTextBox->LostFocus += gcnew System::EventHandler(this, &MainForm::descTextBox_LostFocus);
 
             // ==================== Полное описание ====================
-            this->lblFullDescription->AutoSize = true;
-            this->lblFullDescription->Location = System::Drawing::Point(101, 248);
-            this->lblFullDescription->Text = L"Полное описание задачи:";
-
             this->fullDescriptionTextBox->Location = System::Drawing::Point(101, 268);
             this->fullDescriptionTextBox->Size = System::Drawing::Size(486, 80);
             this->fullDescriptionTextBox->Multiline = true;
             this->fullDescriptionTextBox->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
             this->fullDescriptionTextBox->TabIndex = 2;
             this->fullDescriptionTextBox->Text = L"Подробное описание (можно писать много строк)";
+
+            // ←←← ДОБАВЬ ЭТИ ДВЕ СТРОКИ ↓↓↓
+            this->fullDescriptionTextBox->GotFocus += gcnew System::EventHandler(this, &MainForm::fullDescriptionTextBox_GotFocus);
+            this->fullDescriptionTextBox->LostFocus += gcnew System::EventHandler(this, &MainForm::fullDescriptionTextBox_LostFocus);
 
             // ==================== Остальные элементы ====================
             this->priorityComboBox->Location = System::Drawing::Point(101, 365);
@@ -149,13 +136,13 @@ namespace ToDoListGUI
             this->dueDatePicker->CustomFormat = L"dd.MM.yyyy HH:mm";
 
             this->addButton->Location = System::Drawing::Point(101, 445);
-            this->addButton->Size = System::Drawing::Size(75, 23);
+            this->addButton->Size = System::Drawing::Size(90, 23);
             this->addButton->TabIndex = 6;
             this->addButton->Text = L"Добавить";
             this->addButton->Click += gcnew System::EventHandler(this, &MainForm::addButton_Click);
 
             this->deleteButton->Location = System::Drawing::Point(182, 445);
-            this->deleteButton->Size = System::Drawing::Size(75, 23);
+            this->deleteButton->Size = System::Drawing::Size(90, 23);
             this->deleteButton->TabIndex = 7;
             this->deleteButton->Text = L"Удалить";
             this->deleteButton->Click += gcnew System::EventHandler(this, &MainForm::deleteButton_Click);
@@ -175,6 +162,12 @@ namespace ToDoListGUI
             // trayIcon
             this->trayIcon->DoubleClick += gcnew System::EventHandler(this, &MainForm::trayIcon_DoubleClick);
 
+            // ==================== Кнопка выхода ====================
+            this->btnLogout->Size = System::Drawing::Size(140, 50);
+            this->btnLogout->Text = L"Выйти из аккаунта";
+            this->btnLogout->Location = System::Drawing::Point(660, 690);
+            this->btnLogout->Click += gcnew System::EventHandler(this, &MainForm::btnLogout_Click);
+
             this->ClientSize = System::Drawing::Size(804, 750);
 
             // Добавляем ВСЕ элементы
@@ -189,20 +182,43 @@ namespace ToDoListGUI
             this->Controls->Add(this->searchTextBox);
             this->Controls->Add(this->searchButton);
             this->Controls->Add(this->checkOverdueButton);
+            this->Controls->Add(this->btnLogout);
 
-            this->Name = L"MainForm";
-            this->Text = L"MainForm";
             this->ResumeLayout(false);
             this->PerformLayout();
 
-            // Кнопка выхода
-            this->btnLogout = (gcnew System::Windows::Forms::Button());
-            this->btnLogout->Size = System::Drawing::Size(140, 50);
-            this->btnLogout->Text = L"Выйти из аккаунта";
-            this->btnLogout->Location = System::Drawing::Point(660, 690);
-            this->btnLogout->Click += gcnew System::EventHandler(this, &MainForm::btnLogout_Click);
-            this->Controls->Add(this->btnLogout);
+            this->searchTextBox->GotFocus += gcnew System::EventHandler(this, &MainForm::searchTextBox_GotFocus);
+            this->searchTextBox->LostFocus += gcnew System::EventHandler(this, &MainForm::searchTextBox_LostFocus);
         }
+#pragma endregion
+
+        // ====================== ЗАГРУЗКА ФОРМЫ ======================
+    private: System::Void MainForm_Load(System::Object^ sender, System::EventArgs^ e)
+    {
+        notificationTimer = gcnew System::Windows::Forms::Timer();
+        notificationTimer->Interval = 30000;
+        notificationTimer->Tick += gcnew System::EventHandler(this, &MainForm::notificationTimer_Tick);
+        notificationTimer->Start();
+
+        tasks = gcnew Collections::Generic::List<Task^>();
+        LoadTasks();
+        UpdateListBox();
+
+        this->FormClosing += gcnew System::Windows::Forms::FormClosingEventHandler(this, &MainForm::MainForm_FormClosing);
+
+        descTextBox->ForeColor = Color::Gray;
+        fullDescriptionTextBox->ForeColor = Color::Gray;
+
+        this->Font = gcnew System::Drawing::Font(L"Warm Pixel", 10.0F, FontStyle::Regular);
+
+        try { this->Icon = gcnew System::Drawing::Icon("app_icon.ico"); }
+        catch (...) {  }
+
+        ApplyTheme(currentDarkMode);
+        UpdateLanguage(currentLanguage);
+
+        this->Resize += gcnew System::EventHandler(this, &MainForm::MainForm_Resize);
+    }
 #pragma endregion
 
         // ====================== ВСЕ ОСТАЛЬНЫЕ МЕТОДЫ ======================
@@ -363,6 +379,24 @@ namespace ToDoListGUI
         }
     }
 
+        private: System::Void fullDescriptionTextBox_GotFocus(System::Object^ sender, System::EventArgs^ e)
+        {
+            if (fullDescriptionTextBox->Text == L"Подробное описание (можно писать много строк)")
+            {
+                fullDescriptionTextBox->Text = L"";
+                fullDescriptionTextBox->ForeColor = currentDarkMode ? Color::White : Color::Black;
+            }
+        }
+
+    private: System::Void fullDescriptionTextBox_LostFocus(System::Object^ sender, System::EventArgs^ e)
+    {
+        if (String::IsNullOrWhiteSpace(fullDescriptionTextBox->Text))
+        {
+            fullDescriptionTextBox->Text = L"Подробное описание (можно писать много строк)";
+            fullDescriptionTextBox->ForeColor = currentDarkMode ? Color::Gray : Color::DarkGray;
+        }
+    }
+
     private: System::Void MainForm_Resize(System::Object^ sender, System::EventArgs^ e)
     {
         if (this->WindowState == FormWindowState::Minimized)
@@ -403,6 +437,7 @@ namespace ToDoListGUI
         }
         descTextBox->ForeColor = dark ? Color::Gray : Color::DarkGray;
         searchTextBox->ForeColor = dark ? Color::Gray : Color::DarkGray;
+        fullDescriptionTextBox->ForeColor = dark ? Color::Gray : Color::DarkGray;
     }
 
     private: void UpdateLanguage(String^ lang)
@@ -460,24 +495,22 @@ namespace ToDoListGUI
            // ====================== УВЕДОМЛЕНИЯ + ЗВУК КАЖДЫЕ 30 СЕКУНД ======================
     private: System::Void notificationTimer_Tick(System::Object^ sender, System::EventArgs^ e)
     {
-        bool hasOverdue = false;
-        String^ message = L"‼️ Дедлайн истёк!\n\n";
+        List<String^>^ overdueMessages = gcnew List<String^>();
 
-        for each(Task ^ task in tasks)
+        for each (Task ^ task in tasks)
         {
             DateTime due;
             if (DateTime::TryParseExact(task->dueDateTime, "dd.MM.yyyy HH:mm", nullptr,
                 Globalization::DateTimeStyles::None, due) && due <= DateTime::Now)
             {
-                hasOverdue = true;
-                message += L"• " + task->description + L" (" + task->dueDateTime + L")\n";
+                overdueMessages->Add(L"• " + task->description + L" (до " + task->dueDateTime + L")");
             }
         }
 
-        if (hasOverdue)
+        if (overdueMessages->Count > 0)
         {
-            trayIcon->ShowBalloonTip(10000, L"Внимание! Просроченные задачи", message, ToolTipIcon::Warning);
-            SystemSounds::Exclamation->Play();
+            OverdueAlertForm^ alert = gcnew OverdueAlertForm(overdueMessages);
+            alert->ShowDialog();
         }
     }
     };

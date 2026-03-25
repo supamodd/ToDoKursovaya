@@ -57,7 +57,7 @@ namespace ToDoListGUI
 
             this->SuspendLayout();
 
-            // ====================== ЛОГОТИП (основной элемент интерфейса) ======================
+            // ====================== ЛОГОТИП ======================
             this->pictureBoxLogo->Location = System::Drawing::Point(20, 20);
             this->pictureBoxLogo->Size = System::Drawing::Size(600, 240);
             this->pictureBoxLogo->SizeMode = System::Windows::Forms::PictureBoxSizeMode::Zoom;
@@ -72,7 +72,7 @@ namespace ToDoListGUI
             this->cmbLanguage->SelectedIndex = 0;
             this->cmbLanguage->SelectedIndexChanged += gcnew System::EventHandler(this, &LoginForm::cmbLanguage_SelectedIndexChanged);
 
-            // ====================== ЭЛЕМЕНТЫ ФОРМЫ (сдвинуты вниз из-за логотипа) ======================
+            // ====================== ЭЛЕМЕНТЫ ФОРМЫ ======================
             this->lblLogin->AutoSize = true; this->lblLogin->Location = System::Drawing::Point(50, 330);
             this->txtLogin->Location = System::Drawing::Point(130, 327); this->txtLogin->Size = System::Drawing::Size(200, 20);
             this->lblPassword->AutoSize = true; this->lblPassword->Location = System::Drawing::Point(50, 370);
@@ -80,7 +80,7 @@ namespace ToDoListGUI
             this->txtPassword->PasswordChar = '*';
 
             this->btnLogin->Location = System::Drawing::Point(50, 420); this->btnLogin->Size = System::Drawing::Size(100, 30);
-            this->btnRegister->Location = System::Drawing::Point(170, 420); this->btnRegister->Size = System::Drawing::Size(100, 30);
+            this->btnRegister->Location = System::Drawing::Point(170, 420); this->btnRegister->Size = System::Drawing::Size(130, 30);
             this->btnExit->Location = System::Drawing::Point(290, 420); this->btnExit->Size = System::Drawing::Size(100, 30);
             this->btnTheme->Location = System::Drawing::Point(50, 470); this->btnTheme->Size = System::Drawing::Size(540, 30);
 

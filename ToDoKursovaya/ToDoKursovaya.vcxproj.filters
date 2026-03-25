@@ -26,5 +26,8 @@
     <ClInclude Include="LoginForm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="OverdueAlertForm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
